@@ -1,0 +1,102 @@
+# Hierarchical Design of 3-8 decoder
+#邏輯實驗_HW1_資工二2_黃宇丞141093087
+---
+
+一、實驗目的 : 3 to 8 decoder
+
+二、實驗原理 : 用兩個 2 to 4 decoder 組成一個 3 to 8 decoder
+
+三、實驗材料 : EDAplayground
+
+四、實驗步驟
+
+右區塊
+&emsp;&nbsp;(1). 設計一個 2 to 4 decoder 函式
+&emsp;&nbsp;(2). 設計一個 3 to8 decoder 函式
+&emsp;&nbsp;(3). 設計一個 Clock generator 函式
+```verilog=
+module decoder_2_4(E , In , Out);
+input E;
+input [1:0] In;
+output [3:0] Out;
+wire [3:0] Out;
+assign Out = E ? 1'b1 << In : 4'h0;
+endmodule
+
+module decoder_3_8(E , In , Out);
+input E; 
+input [2:0] In;
+output [7:0] Out;
+wire E1 , G1 , G2;
+not u1(E1 , In[2]); 
+and a1(G1 , E , E1);
+and a2(G2 , E , In[2]);
+decoder_2_4 block1(G1,In[1:0],Out[3:0]);
+decoder_2_4 block2(G2,In[1:0],Out[7:4]);
+endmodule
+
+module clkgen(clka, clkb, clka_out, clkb_out);
+input clka, clkb;
+output clka_out, clkb_out;
+reg clka_out, clkb_out;
+always @(clka) begin 
+clka_out = clka;
+end
+always @(clkb) begin
+clkb_out = clkb;
+end
+endmodule
+```
+左區塊
+&emsp;&nbsp;(1). 設計 Testbench Simulation 去模擬訊號的輸入與輸出
+```verilog=
+module decoder_3_8_tb;
+reg E_tb;
+reg clka, clkb;
+reg [2:0] In_tb;
+wire [7:0] Out_tb;
+wire clka_out, clkb_out;
+decoder_3_8 decoder_1(.E(E_tb), .In(In_tb), .Out(Out_tb));
+clkgen clkgen_1(.clka(clka), .clkb(clkb), .clka_out(clka_out), .clkb_out(clkb_out));
+initial begin
+clka = 1'b0; clkb = 1'b0;
+end
+always begin 
+#10 clka = ~clka; 
+end
+always begin
+#10 clkb = ~clkb;
+end
+
+initial begin
+#0 E_tb = 0; In_tb = 3'b000;
+#10 E_tb = 1; In_tb = 3'b000;
+#10 E_tb = 1; In_tb = 3'b001;
+#10 E_tb = 1; In_tb = 3'b010;
+#10 E_tb = 1; In_tb = 3'b011;
+#10 E_tb = 1; In_tb = 3'b100;
+#10 E_tb = 1; In_tb = 3'b101;
+#10 E_tb = 1; In_tb = 3'b110;
+#10 E_tb = 1; In_tb = 3'b111;
+#10 $finish;
+end
+
+initial begin
+$dumpfile("decoder.vcd");
+$dumpvars(0, decoder_1);
+$dumpvars(0, clkgen_1);
+end
+endmodule
+```
+![](https://imgur.com/NA9mFw4)
+五、實驗結果:
+![](https://imgur.com/a/bRD5n8B)
+
+~~六、實驗討論~~
+
+七、實驗心得 :智慧大師上的程式碼有很多是第一次看過，我覺得很陌生，雖人都是按照PPT上面的直接貼上就好了，但我還是想了解看看其中的涵義，才剛開始還可以好好得學。
+
+
+八、參考文獻 : 數位邏輯實習Lecture_3ppt
+
+九、Github連結－[s1410932087]
