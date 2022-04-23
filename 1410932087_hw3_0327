@@ -1,0 +1,108 @@
+# 數位邏輯設計實驗Homework(3)
+資工二2   黃宇丞 指導老師:林宏益
+
+---
+
+## 一、實驗目的
+練習testbench。
+練習case改寫if else。
+
+---
+
+## 二、實驗原理
+利用原來if else程式與自己寫的testbench相互測試。
+
+---
+
+## 三、實驗步驟
+先用if else程式敘述寫出testbench並測試，
+後面再用case改寫程式，並使用testbench測試。
+
+---
+
+## 四、實驗結果
+*左半邊程式碼
+```=
+module voter_if (I, O);
+input [3:0] I; 
+output [3:1] O; 
+reg [3:1] O; 
+
+always @(I) begin
+    case (I)    
+     4'b0000 : O = 3'b100; 
+     4'b0001 : O = 3'b100; 
+     4'b0010 : O = 3'b100; 
+     4'b0011 : O = 3'b010;  
+     4'b0100 : O = 3'b100;  
+     4'b0101 : O = 3'b010;
+     4'b0110 : O = 3'b010;
+     4'b0111 : O = 3'b001;
+     4'b1000 : O = 3'b100;
+     4'b1001 : O = 3'b010;
+     4'b1010 : O = 3'b010;
+     4'b1011 : O = 3'b001;
+     4'b1100 : O = 3'b010;
+     4'b1101 : O = 3'b001;
+     4'b1110 : O = 3'b001;
+     4'b1111 : O = 3'b001;
+     default: O = 3'b000;  
+ endcase
+end
+endmodule
+```
+![](https://i.imgur.com/586Z6fr.png)
+*右半邊程式碼
+
+```=
+    `timescale 1ns/1ps 
+
+    module voter_if_tb();
+
+    reg [3:0] I_tb;
+    wire [3:1] O_tb;
+
+    voter_if voter4P(.I(I_tb),.O(O_tb)); 
+
+    initial begin
+        #0  I_tb = 4'b0000; 
+        #10 I_tb = 4'b0000; 
+        #10 I_tb = 4'b0001;
+        #10 I_tb = 4'b0010;
+        #10 I_tb = 4'b0011;
+        #10 I_tb = 4'b0100;
+        #10 I_tb = 4'b0101;
+        #10 I_tb = 4'b0110;
+        #10 I_tb = 4'b0111;
+        #10 I_tb = 4'b1000;
+        #10 I_tb = 4'b1001;
+        #10 I_tb = 4'b1010;
+        #10 I_tb = 4'b1011;
+        #10 I_tb = 4'b1100;
+        #10 I_tb = 4'b1101;
+        #10 I_tb = 4'b1110;
+        #10 I_tb = 4'b1111;
+        #10 $finish;
+        end
+    initial
+        begin
+            $dumpfile("voter_if.vcd");
+            $dumpvars(0,voter_if_tb); 
+        end
+    endmodule
+```
+![](https://i.imgur.com/u3AxPv9.png)
+
+![](https://i.imgur.com/eXCRzCD.png)
+
+---
+
+## 五、實驗心得
+這次練習testbench，中間遇到需多問題，解決bug也花了很長時間，這也是第一次自己更改程式碼，所以平平遇到挫折，但最後也還是解決了，也是挺有成就感的，感覺自己有所成長了。
+
+---
+
+## 六、參考文獻
+智慧大師
+
+https://hackmd.io/@uQb-FRTwT02IZh1VvPPZJw/SyuOO9bB9
