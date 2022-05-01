@@ -1,0 +1,82 @@
+# **數位邏輯設計實驗Homework(4)**
+
+
+資工二2：黃宇丞    指導老師：林宏益
+
+
+---
+
+## 一.作業目標
+設計BCD上數計數器並具有非同步正準位清除功能，並撰寫testbench
+
+
+## 二.程式碼
+>RTL Code
+```=
+module BCD(clk, rst);
+input clk; //I clock in
+input rst; //I asyn reset
+output [3:0] Q_out; // O asyn Result
+reg [3:0] Q_out;
+
+initial begin
+    Q_out = 4'b0000;    
+end
+
+always@ (posedge clk or posedge rst)
+begin
+    if (rst)
+        Q_out = 0;
+    else if (Q_out == 9)
+        Q_out = 0;
+    else
+        Q_out++;
+end
+endmodule
+```
+>TestBench
+```=
+`timescale 1ns/1ps
+module BCD_tb;
+reg clk_tb;
+reg rst_tb;
+
+initial begin
+    clk_tb = 0;
+    rst_tb = 0;
+end
+
+// clock process
+always begin
+    #10 clk_tb = ~clk_tb;
+end
+
+initial begin
+    #20 rst_tb = 1'b0;
+    #10 rst_tb = 1'b1;
+    #5 rst_tb = 1'b0;
+    #200  $finish;
+end
+
+initial begin
+    $dumpfile("BCD.vcd");
+    $dumpvars(0, BCD_tb);
+end
+
+BCD BCD_tb (
+    .clk(clk_tb),
+    .rst(rst_tb)
+    );    
+endmodule
+```
+
+
+## 三.實驗結果
+
+![](https://i.imgur.com/mIkqFMJ.png)
+
+## 四.心得
+我覺得我越來越熟練Github，整理資料和上傳檔案也迅速很多，但這次的功課寫起來不習慣，就是撰寫RTC code 跟testbench，也花很多時間在找資料上面，也更了解程式碼的用法。
+    
+## 五.參考資料 
+*    智慧大師
